@@ -1,0 +1,19 @@
+{
+  "name": "bouncing-ball",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Uses vector manipulation to make a simple physics simulation of a bouncing ball",
+  "scripts": {
+    "build": "webpack --devtool 'source-map'",
+    "watch": "webpack --watch --devtool 'source-map'"
+  },
+  "author": "Joshua Brown <jbrown1.618@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@josh-brown/vector": "^1.0.2"
+  },
+  "devDependencies": {
+    "webpack": "^4.39.2",
+    "webpack-cli": "^3.3.7"
+  }
+}
