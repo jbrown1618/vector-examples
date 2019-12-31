@@ -1,4 +1,4 @@
-import { NumberVector, NumberMatrix } from '@josh-brown/vector';
+import { vec, mat } from '@josh-brown/vector';
 
 /*
  * All calculations are being done in px and ms, but for initialization we
@@ -8,19 +8,19 @@ import { NumberVector, NumberMatrix } from '@josh-brown/vector';
 const PX_PER_M = 8221;
 const MS_PER_S = 1000;
 
-const reflectVertically = NumberMatrix.builder().fromArray([[1, 0], [0, -0.8]]);
-const reflectHorizontally = NumberMatrix.builder().fromArray([[-0.8, 0], [0, 1]]);
+const reflectVertically = mat([[1, 0], [0, -0.8]]);
+const reflectHorizontally = mat([[-0.8, 0], [0, 1]]);
+
+const iterationInterval = 10;
 
 start(init());
 
 function init() {
   const state = {
-    position: NumberVector.builder().fromArray([50, 50]),
-    velocity: NumberVector.builder()
-      .fromArray([0.3, 0.3])
+    position: vec([50, 50]),
+    velocity: vec([0.1, 0.3])
       .scalarMultiply(PX_PER_M / MS_PER_S), // convert to px/ms
-    acceleration: NumberVector.builder()
-      .fromArray([0, -0.98]) // let's do this in 1/10g
+    acceleration: vec([0, -0.98]) // let's do this in 1/10g
       .scalarMultiply(PX_PER_M / (MS_PER_S * MS_PER_S)), // convert to px/ms^s
     width: 800,
     height: 500
@@ -38,18 +38,17 @@ function init() {
 }
 
 function start({ state, ctx }) {
-  let lastTime = Date.now();
   mainLoop();
+  renderLoop();
 
   function mainLoop() {
-    const newTime = Date.now();
-    const deltaT = newTime - lastTime;
-    lastTime = newTime;
+    state = iterate(state, iterationInterval);
+    setTimeout(mainLoop, iterationInterval);
+  }
 
-    state = iterate(state, deltaT);
+  function renderLoop() {
     render(ctx, state);
-
-    requestAnimationFrame(mainLoop);
+    requestAnimationFrame(renderLoop);
   }
 }
 
@@ -62,18 +61,18 @@ function iterate(state, deltaT) {
   let newX = position.add(velocity.scalarMultiply(deltaT));
 
   if (newX.getEntry(0) < 0) {
-    newX = NumberVector.builder().fromArray([0, newX.getEntry(1)]);
+    newX = vec([0, newX.getEntry(1)]);
     newV = reflectHorizontally.apply(newV);
   } else if (newX.getEntry(0) > width) {
-    newX = NumberVector.builder().fromArray([width, newX.getEntry(1)]);
+    newX = vec([width, newX.getEntry(1)]);
     newV = reflectHorizontally.apply(newV);
   }
 
   if (newX.getEntry(1) < 0) {
-    newX = NumberVector.builder().fromArray([newX.getEntry(0), 0]);
+    newX = vec([newX.getEntry(0), 0]);
     newV = reflectVertically.apply(newV);
   } else if (newX.getEntry(1) > height) {
-    newX = NumberVector.builder().fromArray([newX.getEntry(0), height]);
+    newX = vec([newX.getEntry(0), height]);
     newV = reflectVertically.apply(newV);
   }
 

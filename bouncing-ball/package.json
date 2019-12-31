@@ -10,7 +10,7 @@
   "author": "Joshua Brown <jbrown1.618@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@josh-brown/vector": "^1.0.2"
+    "@josh-brown/vector": "^3.0.4"
   },
   "devDependencies": {
     "webpack": "^4.39.2",
